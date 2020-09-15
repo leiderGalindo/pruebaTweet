@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Tweet;
 
 class TweetController extends Controller
 {
@@ -11,9 +12,13 @@ class TweetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            return Tweet::where('user_id', auth()->id())->get();
+        }else{
+            return view('home');
+        }
     }
 
     /**
@@ -34,7 +39,12 @@ class TweetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Tweet = new Tweet();
+        $Tweet->content = $request->content;
+        $Tweet->user_id = auth()->id();
+        $Tweet->save();
+
+        return $Tweet;
     }
 
     /**
@@ -68,7 +78,11 @@ class TweetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $tweet= Tweet::find($id);
+        $tweet->content = $request->content;
+        $tweet->save();
+
+        return $tweet;
     }
 
     /**
@@ -79,6 +93,7 @@ class TweetController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $tweet= Tweet::find($id);
+        $tweet->delete();
     }
 }
