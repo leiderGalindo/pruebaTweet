@@ -2017,6 +2017,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2064,10 +2070,31 @@ __webpack_require__.r(__webpack_exports__);
       this.tweet.id = item.id;
     },
     UpdateTweet: function UpdateTweet(publication) {
+      var _this4 = this;
+
       var params = {
-        content: item.content
+        content: publication.content
       };
-      axios.update("/Tweet/".concat(item.id), params).then(function (res) {});
+      axios.put("/Tweet/".concat(publication.id), params).then(function (res) {
+        var index = _this4.tweets.findIndex(function (itemBuscar) {
+          return publication.id === res.data.id;
+        });
+
+        _this4.crearActivo = true;
+        _this4.tweets[index] = res.data;
+        _this4.tweet = {
+          content: ''
+        };
+        axios.get('/Tweet').then(function (res) {
+          _this4.tweets = res.data;
+        });
+      });
+    },
+    cancelarEdicion: function cancelarEdicion() {
+      this.crearActivo = true;
+      this.tweet = {
+        content: ''
+      };
     }
   }
 });
@@ -37802,7 +37829,61 @@ var render = function() {
                       })
                     ]),
                     _vm._v(" "),
-                    _vm._m(3)
+                    _c("div", { staticClass: "form-group col-2" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success mt-3",
+                          attrs: { type: "submit" }
+                        },
+                        [_vm._v("Guardar")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger mt-3",
+                          attrs: { type: "submit" },
+                          on: {
+                            click: function($event) {
+                              return _vm.cancelarEdicion()
+                            }
+                          }
+                        },
+                        [
+                          _c(
+                            "svg",
+                            {
+                              staticClass: "bi bi-x-square",
+                              attrs: {
+                                width: "1em",
+                                height: "1em",
+                                viewBox: "0 0 16 16",
+                                fill: "currentColor",
+                                xmlns: "http://www.w3.org/2000/svg"
+                              }
+                            },
+                            [
+                              _c("path", {
+                                attrs: {
+                                  "fill-rule": "evenodd",
+                                  d:
+                                    "M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("path", {
+                                attrs: {
+                                  "fill-rule": "evenodd",
+                                  d:
+                                    "M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                                }
+                              })
+                            ]
+                          )
+                        ]
+                      )
+                    ])
                   ])
                 ]
               )
@@ -37813,7 +37894,7 @@ var render = function() {
         return _c("div", { key: index, staticClass: "card mt-3" }, [
           _c("div", { staticClass: "p-3 pb-0" }, [
             _c("div", { staticClass: "row" }, [
-              _vm._m(4, true),
+              _vm._m(3, true),
               _vm._v(" "),
               _c("div", { staticClass: "form-group col-9" }, [
                 _c("p", { staticClass: "ml-3 font-weight-bold" }, [
@@ -37969,18 +38050,6 @@ var staticRenderFns = [
         },
         attrs: { src: "images/reinelex.jpg" }
       })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group col-2" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-success mt-3", attrs: { type: "submit" } },
-        [_vm._v("Guardar")]
-      )
     ])
   },
   function() {
